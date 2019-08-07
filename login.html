@@ -51,6 +51,46 @@
     <script src="/public/js/jquery-3.1.1.min.js"></script>
     <script src="/public/js/popper.min.js"></script>
     <script src="/public/js/bootstrap.js"></script>
+    <script src="js/amazon-cognito-auth.min.js"></script>
+	<script src="https://sdk.amazonaws.com/js/aws-sdk-2.7.16.min.js"></script> 
+	<script src="js/amazon-cognito-identity.min.js"></script>   
+    <script src="js/config.js"></script>
+    
+    <script>
+        function signInButton() {
+          
+          var authenticationData = {
+              Username : document.getElementById("inputUsername").value,
+              Password : document.getElementById("inputPassword").value,
+          };
+          
+          var authenticationDetails = new AmazonCognitoIdentity.AuthenticationDetails(authenticationData);
+          
+          var poolData = {
+              UserPoolId : "us-east-2_nMbhhM72O" // Your user pool id here
+              ClientId : "5qajak75bqgmmnsm4hukdil9qm" // Your client id here
+          };
+          
+          var userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
+          
+          var userData = {
+              Username : document.getElementById("inputUsername").value,
+              Pool : userPool,
+          };
+          
+          var cognitoUser = new AmazonCognitoIdentity.CognitoUser(userData);
+          
+          cognitoUser.authenticateUser(authenticationDetails, {
+              onSuccess: function (result) {
+                  var accessToken = result.getAccessToken().getJwtToken();
+                  console.log(accessToken);	
+              },
+              onFailure: function(err) {
+                  alert(err.message || JSON.stringify(err));
+              },
+          });
+        }
+      </script>
 
 </body>
 
